@@ -99,7 +99,7 @@
 .timelineItem {
   display: flex;
   gap: 20px;
-  min-height: 80px;
+  min-height: 120px;
   position: relative;
 }
 
@@ -134,43 +134,59 @@
 
 .timelineContent {
   flex: 1;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
 }
 
 .timelineHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 6px;
+  align-items: center;
+  margin-bottom: 12px;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .miniBadge {
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   font-weight: 950;
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.05);
   flex-shrink: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 1px;
 }
 
-.miniBadge.livre { background: rgba(0, 255, 136, 0.15); color: var(--status-livre); }
-.miniBadge.atencao { background: rgba(255, 215, 0, 0.15); color: var(--status-atencao); }
-.miniBadge.sujo { background: rgba(255, 68, 68, 0.15); color: var(--status-sujo); }
+.miniBadge.livre { background: rgba(0, 255, 136, 0.15); color: var(--status-livre); border: 1px solid rgba(0, 255, 136, 0.1); }
+.miniBadge.atencao { background: rgba(255, 215, 0, 0.15); color: var(--status-atencao); border: 1px solid rgba(255, 215, 0, 0.1); }
+.miniBadge.sujo { background: rgba(255, 68, 68, 0.15); color: var(--status-sujo); border: 1px solid rgba(255, 68, 68, 0.1); }
 
 .timelineMeta {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 1;
-  justify-content: flex-end;
+}
+
+.timeStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
 }
 
 .timelineTime {
   font-size: 0.65rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
+}
+
+.relativeTime {
+  font-size: 0.7rem;
+  color: var(--accent-color);
+  font-weight: 800;
 }
 
 .feedbackIcons {
@@ -179,16 +195,16 @@
 }
 
 .thumbBtn {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  padding: 4px 8px;
-  height: 28px;
-  border-radius: 6px;
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.2);
+  padding: 6px 12px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   transition: all 0.2s;
-  color: var(--text-muted);
+  color: var(--status-sujo);
 }
 
 .thumbBtn:active {
@@ -200,27 +216,34 @@
   cursor: default;
 }
 
-.voteCount {
-  font-size: 0.7rem;
-  font-weight: 800;
+.thumbLabel {
+  font-size: 0.65rem;
+  font-weight: 950;
+  letter-spacing: 0.5px;
 }
 
-.votedUp { 
-  background: rgba(0, 255, 136, 0.1) !important;
-  color: var(--status-livre) !important;
-  border-color: var(--status-livre) !important;
+.voteCount {
+  font-size: 0.75rem;
+  font-weight: 950;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .votedDown { 
-  background: rgba(255, 68, 68, 0.1) !important;
-  color: var(--status-sujo) !important;
+  background: var(--status-sujo) !important;
+  color: #fff !important;
   border-color: var(--status-sujo) !important;
 }
 
+.votedDown .voteCount {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .timelineMsg {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #ccc;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .currentImageContainer {

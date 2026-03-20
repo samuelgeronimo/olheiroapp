@@ -22,7 +22,7 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
   const { isSubscribed, setSubscription } = useSubscription();
   const [loading, setLoading] = useState(true);
   const [isOfflineMode, setIsOfflineMode] = useState(false);
-  const [votedUpdates, setVotedUpdates] = useState<Record<string, 'up' | 'down'>>({});
+  const [votedUpdates, setVotedUpdates] = useState<Record<string, 'down'>>({});
 
   useEffect(() => {
     const savedVotes = localStorage.getItem(`votes_${id}`);
@@ -128,8 +128,8 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
       // Update POI current state
       const { error: poiError } = await supabase
         .from('pois')
-        .update({ 
-          status, 
+        .update({
+          status,
           last_update: now,
           image_url: imageUrl
         })
@@ -141,7 +141,7 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
       const { error: auditError } = await supabase
         .from('status_updates')
         .insert(updatePayload);
-      
+
       if (auditError) throw auditError;
 
     } catch (err) {
@@ -151,7 +151,7 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
     }
   };
 
-  const handleVote = async (updateId: string, type: 'up' | 'down') => {
+  const handleVote = async (updateId: string) => {
     if (votedUpdates[updateId]) return;
 
     // Optimistic Update
@@ -159,14 +159,13 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
       if (upd.id === updateId) {
         return {
           ...upd,
-          upvotes: type === 'up' ? (upd.upvotes || 0) + 1 : upd.upvotes,
-          downvotes: type === 'down' ? (upd.downvotes || 0) + 1 : upd.downvotes,
+          downvotes: (upd.downvotes || 0) + 1,
         };
       }
       return upd;
     }));
 
-    const newVotes = { ...votedUpdates, [updateId]: type };
+    const newVotes = { ...votedUpdates, [updateId]: 'down' as const };
     setVotedUpdates(newVotes);
     localStorage.setItem(`votes_${id}`, JSON.stringify(newVotes));
 
@@ -177,8 +176,7 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
     await supabase
       .from('status_updates')
       .update({
-        upvotes: type === 'up' ? (updateToVote.upvotes || 0) + 1 : updateToVote.upvotes,
-        downvotes: type === 'down' ? (updateToVote.downvotes || 0) + 1 : updateToVote.downvotes,
+        downvotes: (updateToVote.downvotes || 0) + 1,
       })
       .eq('id', updateId);
   };
@@ -255,22 +253,19 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
                       {update.status.toUpperCase()}
                     </span>
                     <div className={styles.timelineMeta}>
-                      <span className={styles.timelineTime}>{formatFullDate(update.timestamp)}</span>
+                      <div className={styles.timeStack}>
+                        <span className={styles.timelineTime}>{formatFullDate(update.timestamp)}</span>
+                        <span className={styles.relativeTime}>{formatRelativeTime(update.timestamp)}</span>
+                      </div>
                       <div className={styles.feedbackIcons}>
-                        <button 
-                          className={`${styles.thumbBtn} ${votedUpdates[update.id] === 'up' ? styles.votedUp : ''}`}
-                          onClick={() => handleVote(update.id, 'up')}
+                        <button
+                          className={`${styles.thumbBtn} ${votedUpdates[update.id] ? styles.votedDown : ''}`}
+                          onClick={() => handleVote(update.id)}
                           disabled={!!votedUpdates[update.id]}
+                          title="Informar erro neste reporte"
                         >
-                          <ThumbsUp size={12} />
-                          <span className={styles.voteCount}>{update.upvotes || 0}</span>
-                        </button>
-                        <button 
-                          className={`${styles.thumbBtn} ${votedUpdates[update.id] === 'down' ? styles.votedDown : ''}`}
-                          onClick={() => handleVote(update.id, 'down')}
-                          disabled={!!votedUpdates[update.id]}
-                        >
-                          <ThumbsDown size={12} />
+                          <ThumbsDown size={14} />
+                          <span className={styles.thumbLabel}>ERRO</span>
                           <span className={styles.voteCount}>{update.downvotes || 0}</span>
                         </button>
                       </div>
