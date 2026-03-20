@@ -61,18 +61,13 @@
 
 .statusDisplay {
   font-size: 2.2rem;
-  font-weight: 900;
+  font-weight: 950;
   margin-bottom: 8px;
 }
 
 .livre { color: var(--status-livre); }
 .atencao { color: var(--status-atencao); }
 .sujo { color: var(--status-sujo); }
-
-.lastSync {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
 
 .historySection {
   padding-bottom: 40px;
@@ -145,21 +140,81 @@
 .timelineHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 6px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .miniBadge {
   font-size: 0.55rem;
-  font-weight: 900;
-  padding: 2px 6px;
+  font-weight: 950;
+  padding: 2px 8px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.miniBadge.livre { background: rgba(0, 255, 136, 0.15); color: var(--status-livre); }
+.miniBadge.atencao { background: rgba(255, 215, 0, 0.15); color: var(--status-atencao); }
+.miniBadge.sujo { background: rgba(255, 68, 68, 0.15); color: var(--status-sujo); }
+
+.timelineMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .timelineTime {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
+  font-weight: 500;
+}
+
+.feedbackIcons {
+  display: flex;
+  gap: 8px;
+}
+
+.thumbBtn {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 4px 8px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+
+.thumbBtn:active {
+  transform: scale(0.9);
+}
+
+.thumbBtn:disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.voteCount {
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.votedUp { 
+  background: rgba(0, 255, 136, 0.1) !important;
+  color: var(--status-livre) !important;
+  border-color: var(--status-livre) !important;
+}
+
+.votedDown { 
+  background: rgba(255, 68, 68, 0.1) !important;
+  color: var(--status-sujo) !important;
+  border-color: var(--status-sujo) !important;
 }
 
 .timelineMsg {

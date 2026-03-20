@@ -78,7 +78,7 @@ export default function MapClient() {
 
       <Header />
       
-      <main className="container">
+      <main className="container" style={{ paddingBottom: '120px' }}>
         <h2 style={{ margin: '20px 0' }}>Mapa de Monitoramento</h2>
         <MapWrapper 
           pois={pois} 

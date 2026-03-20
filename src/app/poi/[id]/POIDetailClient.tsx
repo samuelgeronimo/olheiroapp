@@ -10,7 +10,7 @@ import { queueUpdate } from '@/lib/offlineSync';
 import POIStatusCard from '@/components/POIStatusCard';
 import { POI, PointStatus } from '@/lib/supabase';
 import { supabase } from '@/lib/supabase';
-import { MapPin, ArrowLeft, History, Clock, WifiOff } from 'lucide-react';
+import { MapPin, ArrowLeft, History, Clock, WifiOff, ThumbsUp, ThumbsDown } from 'lucide-react';
 import styles from './poi.module.css';
 import { formatRelativeTime } from '@/lib/dateUtils';
 
@@ -22,7 +22,14 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
   const { isSubscribed, setSubscription } = useSubscription();
   const [loading, setLoading] = useState(true);
   const [isOfflineMode, setIsOfflineMode] = useState(false);
+  const [votedUpdates, setVotedUpdates] = useState<Record<string, 'up' | 'down'>>({});
 
+  useEffect(() => {
+    const savedVotes = localStorage.getItem(`votes_${id}`);
+    if (savedVotes) {
+      setVotedUpdates(JSON.parse(savedVotes));
+    }
+  }, [id]);
   useEffect(() => {
     const fetchPoiData = async () => {
       // Fetch current POI state
@@ -144,6 +151,37 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
     }
   };
 
+  const handleVote = async (updateId: string, type: 'up' | 'down') => {
+    if (votedUpdates[updateId]) return;
+
+    // Optimistic Update
+    setHistory(prev => prev.map(upd => {
+      if (upd.id === updateId) {
+        return {
+          ...upd,
+          upvotes: type === 'up' ? (upd.upvotes || 0) + 1 : upd.upvotes,
+          downvotes: type === 'down' ? (upd.downvotes || 0) + 1 : upd.downvotes,
+        };
+      }
+      return upd;
+    }));
+
+    const newVotes = { ...votedUpdates, [updateId]: type };
+    setVotedUpdates(newVotes);
+    localStorage.setItem(`votes_${id}`, JSON.stringify(newVotes));
+
+    // Update DB
+    const updateToVote = history.find(u => u.id === updateId);
+    if (!updateToVote) return;
+
+    await supabase
+      .from('status_updates')
+      .update({
+        upvotes: type === 'up' ? (updateToVote.upvotes || 0) + 1 : updateToVote.upvotes,
+        downvotes: type === 'down' ? (updateToVote.downvotes || 0) + 1 : updateToVote.downvotes,
+      })
+      .eq('id', updateId);
+  };
   if (!isSubscribed) {
     return <Paywall onSubscribe={() => setSubscription(true)} />;
   }
@@ -216,7 +254,27 @@ export default function POIDetailClient({ params }: { params: Promise<{ id: stri
                     <span className={`${styles.miniBadge} ${styles[update.status]}`}>
                       {update.status.toUpperCase()}
                     </span>
-                    <span className={styles.timelineTime}>{formatFullDate(update.timestamp)}</span>
+                    <div className={styles.timelineMeta}>
+                      <span className={styles.timelineTime}>{formatFullDate(update.timestamp)}</span>
+                      <div className={styles.feedbackIcons}>
+                        <button 
+                          className={`${styles.thumbBtn} ${votedUpdates[update.id] === 'up' ? styles.votedUp : ''}`}
+                          onClick={() => handleVote(update.id, 'up')}
+                          disabled={!!votedUpdates[update.id]}
+                        >
+                          <ThumbsUp size={12} />
+                          <span className={styles.voteCount}>{update.upvotes || 0}</span>
+                        </button>
+                        <button 
+                          className={`${styles.thumbBtn} ${votedUpdates[update.id] === 'down' ? styles.votedDown : ''}`}
+                          onClick={() => handleVote(update.id, 'down')}
+                          disabled={!!votedUpdates[update.id]}
+                        >
+                          <ThumbsDown size={12} />
+                          <span className={styles.voteCount}>{update.downvotes || 0}</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   <p className={styles.timelineMsg}>
                     {update.message || (update.status === 'sujo' ? 'Presença de fiscalização.' :

@@ -14,6 +14,8 @@ export interface StatusUpdate {
   timestamp: string; // ISO string
   message: string;
   reporter_location?: 'via-foz' | 'via-cascavel';
+  upvotes?: number;
+  downvotes?: number;
 }
 
 export interface POI {

@@ -81,7 +81,7 @@ export default function POIStatusCard({ poi, onStatusChange }: Props) {
 
       <div className={styles.alertContext}>
         <AlertCircle size={12} color="var(--status-sujo)" />
-        <span>Reportar sentido **SAINDO DE FOZ** (Cascavel)</span>
+        <span>Quem postar mentira será expulso do app</span>
       </div>
 
         <div className={styles.statusGrid} role="group" aria-label="Selecione o novo status">
@@ -90,6 +90,7 @@ export default function POIStatusCard({ poi, onStatusChange }: Props) {
             onClick={() => setSelectedStatus('livre')}
             aria-label="Marcar como Livre"
           >
+            <CheckCircle size={14} />
             LIVRE
           </button>
           <button 
@@ -97,6 +98,7 @@ export default function POIStatusCard({ poi, onStatusChange }: Props) {
             onClick={() => setSelectedStatus('atencao')}
             aria-label="Marcar como Atenção"
           >
+            <AlertTriangle size={14} />
             ATENÇÃO
           </button>
           <button 
@@ -104,6 +106,7 @@ export default function POIStatusCard({ poi, onStatusChange }: Props) {
             onClick={() => setSelectedStatus('sujo')}
             aria-label="Marcar como Sujo"
           >
+            <Shield size={14} />
             SUJO
           </button>
         </div>
