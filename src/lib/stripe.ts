@@ -15,13 +15,18 @@ import { supabase } from './supabase';
  */
 export async function createStripeCheckout(userId: string, userEmail: string) {
   try {
+    const isProduction = process.env.NEXT_PUBLIC_STRIPE_MODE === 'production';
+    const priceId = isProduction 
+      ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PROD 
+      : process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_TEST;
+
     const response = await fetch('/api/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 
-        priceId: 'price_1TD6Y1DqblMH6A92ITY1mN5Q',
+        priceId: priceId || 'price_1TD6Y1DqblMH6A92ITY1mN5Q',
         email: userEmail,
         userId: userId
       })
@@ -33,11 +38,8 @@ export async function createStripeCheckout(userId: string, userEmail: string) {
     // Redirect to the URL returned by the Stripe API
     return data.url;
 
-  } catch (err) {
-    console.error('Error generating checkout session (DETAILED):', err);
-    // Fallback URL if function fails during dev
-    const isTestMode = process.env.NEXT_PUBLIC_STRIPE_MODE !== 'production';
-    const baseUrl = isTestMode ? 'https://checkout.stripe.com/test/' : 'https://checkout.stripe.com/';
-    return `${baseUrl}pay/olheiro_pro_monthly?client_reference_id=${userId}`;
+  } catch (err: any) {
+    console.error('Error generating checkout session:', err);
+    throw err;
   }
 }
