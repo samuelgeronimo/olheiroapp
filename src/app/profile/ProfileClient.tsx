@@ -222,7 +222,7 @@ export default function ProfileClient() {
 
         <h4 className={styles.sectionTitle}>Ações e Suporte</h4>
         <div className={styles.menu}>
-          <a href="https://wa.me/5545999999999" target="_blank" className={styles.menuItem}>
+          <a href="https://wa.me/5511978867413" target="_blank" className={styles.menuItem}>
             <div className={styles.menuLabel}>
               <MessageSquare size={18} />
               <span>Feedback / Sugerir Ponto de Interesse</span>

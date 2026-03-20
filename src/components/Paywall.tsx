@@ -1,7 +1,7 @@
 "use client";
 
 import styles from './Paywall.module.css';
-import { ShieldCheck, Zap, Lock, CreditCard } from 'lucide-react';
+import { ShieldCheck, Zap, Lock, CreditCard, MessageSquare } from 'lucide-react';
 import { createStripeCheckout } from '@/lib/stripe';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useState } from 'react';
@@ -83,6 +83,10 @@ export default function Paywall({ onSubscribe }: Props) {
 
           <div className={styles.socialProof}>
             Junte-se a <strong>1.240 motoristas</strong> protegidos agora
+          </div>
+
+          <div className={styles.helpLink}>
+            Dúvidas? <a href="https://wa.me/5511978867413" target="_blank">Fale conosco no WhatsApp</a>
           </div>
         </div>
       </div>

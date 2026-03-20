@@ -5,7 +5,7 @@ import BottomNav from '@/components/BottomNav';
 import RoutePlanner from '@/components/RoutePlanner';
 import { usePOIs } from '@/hooks/usePOIs';
 import { useSubscription } from '@/hooks/useSubscription';
-import { MapPin, Clock, AlertTriangle, Lock } from 'lucide-react';
+import { MapPin, Clock, AlertTriangle, Lock, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
@@ -28,9 +28,24 @@ export default function HomeClient() {
     setSource(src);
   };
 
+  const getSourceCoords = () => {
+    switch (source) {
+      case 'FOZ': return { lat: -25.5000, lng: -54.5800 };
+      case 'SDG': return { lat: -24.0300, lng: -54.3000 };
+      case 'PJC': return { lat: -22.5400, lng: -55.7200 };
+      default: return { lat: -25.5000, lng: -54.5800 };
+    }
+  };
+
+  const sourceCoords = getSourceCoords();
+
   const filteredPoints = points
     .filter(p => p.routes.includes(destination) && p.routes.includes(source.toLowerCase()))
-    .sort((a, b) => a.lng - b.lng);
+    .sort((a, b) => {
+      const distA = Math.sqrt(Math.pow(a.lat - sourceCoords.lat, 2) + Math.pow(a.lng - sourceCoords.lng, 2));
+      const distB = Math.sqrt(Math.pow(b.lat - sourceCoords.lat, 2) + Math.pow(b.lng - sourceCoords.lng, 2));
+      return distA - distB;
+    });
 
   const getOverallStatus = () => {
     if (filteredPoints.some(p => p.status === 'sujo')) return 'sujo';
@@ -159,6 +174,12 @@ export default function HomeClient() {
               </Link>
             ))}
           </div>
+        </div>
+        <div className={styles.supportLink}>
+          <a href="https://wa.me/5511978867413" target="_blank" className={styles.waBtn}>
+            <div className={styles.waIcon}><MessageSquare size={16} /></div>
+            <span>Suporte: Sugerir Ponto ou Feedback</span>
+          </a>
         </div>
       </main>
 

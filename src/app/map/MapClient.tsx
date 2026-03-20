@@ -90,6 +90,27 @@ export default function MapClient() {
           <h4>Dica do Olheiro:</h4>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Toque nos ícones para ver detalhes de cada posto e a última atualização dos membros da comunidade.</p>
         </div>
+
+        <div style={{ marginTop: '12px', textAlign: 'center' }}>
+          <a 
+            href="https://wa.me/5511978867413" 
+            target="_blank" 
+            style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              fontSize: '0.8rem', 
+              color: 'var(--accent-color)', 
+              textDecoration: 'none',
+              padding: '8px 16px',
+              border: '1px solid rgba(251, 191, 36, 0.2)',
+              borderRadius: '20px'
+            }}
+          >
+            <AlertTriangle size={14} />
+            Sugerir Ponto de Interesse ou Feedback
+          </a>
+        </div>
       </main>
 
       <BottomNav />
