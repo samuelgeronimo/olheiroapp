@@ -10,8 +10,16 @@ export function useSubscription() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const isLaunchMode = process.env.NEXT_PUBLIC_LAUNCH_MODE === 'true';
 
   useEffect(() => {
+    if (isLaunchMode) {
+      console.log('useSubscription: LAUNCH MODE ACTIVE - Bypassing paywall.');
+      setIsSubscribed(true);
+      setLoading(false);
+      return;
+    }
+
     // 1. Initial logic check
     const init = async () => {
       console.log('useSubscription: Initializing auth check...');
