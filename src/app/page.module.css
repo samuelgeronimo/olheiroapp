@@ -1,0 +1,239 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+}
+
+.headerSection {
+  background: #0a0a0a;
+  padding: 12px 16px;
+  border-bottom: 2px solid #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plannerSection {
+  padding: 16px 16px 0 16px;
+  background: #000;
+}
+
+.badge {
+  background: var(--accent-color);
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  align-self: flex-start;
+  text-transform: uppercase;
+}
+
+.routeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.direction {
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+
+.arrow {
+  color: var(--accent-color);
+  opacity: 0.8;
+}
+
+.focusLabel {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--status-sujo);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 1;
+}
+
+.dashboard {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.overallAlert {
+  width: 100%;
+  padding: 24px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.overallStatus {
+  font-size: 2.5rem;
+  font-weight: 950;
+  letter-spacing: -1px;
+}
+
+.overallDesc {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.overallAlert.livre { background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 100, 50, 0.2)); color: var(--status-livre); border-color: rgba(0, 255, 136, 0.3); }
+.overallAlert.atencao { background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(100, 80, 0, 0.2)); color: var(--status-atencao); border-color: rgba(255, 215, 0, 0.3); }
+.overallAlert.sujo { background: linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(100, 20, 20, 0.2)); color: var(--status-sujo); border-color: rgba(255, 68, 68, 0.3); }
+
+.poiList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.poiCard {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 20px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.poiCard:active {
+  transform: scale(0.97);
+  background: #161616;
+}
+
+.poiMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.poiHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pinIcon {
+  color: var(--accent-color);
+}
+
+.poiType {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.poiName {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.statusBadge {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.statusBadge.livre {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--status-livre);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.statusBadge.atencao {
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--status-atencao);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.statusBadge.sujo {
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--status-sujo);
+  border: 1px solid rgba(255, 68, 68, 0.2);
+}
+
+.poiFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #222;
+}
+
+.lastUpdate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.alertNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: var(--status-sujo);
+  font-weight: 700;
+}
+
+/* Locked State Styles */
+.locked {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%) !important;
+  color: var(--text-muted) !important;
+  border-color: #333 !important;
+}
+
+.locked .overallStatus,
+.locked .overallDesc {
+  opacity: 0.5;
+}
+
+.lockBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-color);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.poiCard.isLocked {
+  opacity: 0.9;
+}
+
+.statusBadge.lockedBadge {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

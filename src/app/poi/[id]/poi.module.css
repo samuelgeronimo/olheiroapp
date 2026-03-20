@@ -1,0 +1,199 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.backBtn {
+  background: transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.typeBadge {
+  color: var(--accent-color);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.coordinate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.mainStatus {
+  background: var(--secondary-bg);
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.statusLabel {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.statusDisplay {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.livre { color: var(--status-livre); }
+.atencao { color: var(--status-atencao); }
+.sujo { color: var(--status-sujo); }
+
+.lastSync {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.historySection {
+  padding-bottom: 40px;
+}
+
+.historyHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.historyHeader h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.historySub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 20px;
+  min-height: 80px;
+  position: relative;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 7px;
+  top: 15px;
+  bottom: 0;
+  width: 2px;
+  background: #222;
+  z-index: 1;
+}
+
+.timelineItem:last-child .timelineLine {
+  display: none;
+}
+
+.timelineDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #333;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2;
+  border: 4px solid var(--primary-bg);
+}
+
+.timelineDot.livre { background: var(--status-livre); box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
+.timelineDot.atencao { background: var(--status-atencao); box-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+.timelineDot.sujo { background: var(--status-sujo); box-shadow: 0 0 10px rgba(255, 68, 68, 0.4); }
+
+.timelineContent {
+  flex: 1;
+  padding-bottom: 24px;
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.miniBadge {
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.timelineTime {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.timelineMsg {
+  font-size: 0.85rem;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.currentImageContainer {
+  margin-top: 16px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.currentImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 0.7rem;
+}

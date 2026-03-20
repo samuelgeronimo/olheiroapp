@@ -1,0 +1,168 @@
+"use client";
+
+import Header from '@/components/Header';
+import BottomNav from '@/components/BottomNav';
+import RoutePlanner from '@/components/RoutePlanner';
+import { usePOIs } from '@/hooks/usePOIs';
+import { useSubscription } from '@/hooks/useSubscription';
+import { MapPin, Clock, AlertTriangle, Lock } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import styles from './page.module.css';
+import { formatRelativeTime } from '@/lib/dateUtils';
+
+export default function HomeClient() {
+  const [source, setSource] = useState('FOZ');
+  const [destination, setDestination] = useState('curitiba');
+  const [mounted, setMounted] = useState(false);
+  const { pois: points, loading } = usePOIs();
+  const { isSubscribed } = useSubscription();
+
+  useEffect(() => {
+    console.log('HomeClient mounted. Subscription state:', isSubscribed);
+    setMounted(true);
+  }, [isSubscribed]);
+
+  const handlePlan = (dest: string, src: string) => {
+    setDestination(dest);
+    setSource(src);
+  };
+
+  const filteredPoints = points
+    .filter(p => p.routes.includes(destination) && p.routes.includes(source.toLowerCase()))
+    .sort((a, b) => a.lng - b.lng);
+
+  const getOverallStatus = () => {
+    if (filteredPoints.some(p => p.status === 'sujo')) return 'sujo';
+    if (filteredPoints.some(p => p.status === 'atencao')) return 'atencao';
+    return 'livre';
+  };
+
+  const overallStatus = getOverallStatus();
+
+  const getSourceLabel = () => {
+    switch (source) {
+      case 'FOZ': return 'Foz / CDE';
+      case 'SDG': return 'Salto del Guairá';
+      case 'PJC': return 'Pedro Juan Caballero';
+      default: return 'Foz';
+    }
+  };
+
+  const getDestinationLabel = () => {
+    switch (destination) {
+      case 'curitiba': return 'Curitiba';
+      case 'ourinhos': return 'Ourinhos';
+      case 'umuarama': return 'Umuarama';
+      case 'maringa': return 'Maringá';
+      case 'presidente-prudente': return 'Pres. Prudente';
+      case 'pato-branco': return 'Pato Branco';
+      case 'campo-grande': return 'Campo Grande';
+      case 'dourados': return 'Dourados';
+      default: return 'Leste (PR/SC/SP)';
+    }
+  };
+
+  return (
+    <div className={styles.wrapper} suppressHydrationWarning>
+      <Header />
+      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Olheiro Monitoring",
+            "description": `Real-time collaborative route monitoring for Foz to ${destination}.`,
+            "areaServed": "Foz do Iguaçu, Cascavel, Curitiba, Londrina",
+            "provider": {
+              "@type": "Organization",
+              "name": "Olheiro"
+            }
+          })
+        }}
+      />
+
+      <main className="container" aria-label="Painel de Monitoramento" suppressHydrationWarning>
+        <section className={styles.plannerSection}>
+          <RoutePlanner onPlan={handlePlan} />
+        </section>
+
+        <section className={styles.headerSection} suppressHydrationWarning>
+          <div className={styles.badge} suppressHydrationWarning>ROTA MONITORADA</div>
+          <div className={styles.routeInfo} suppressHydrationWarning>
+            <div className={styles.direction} suppressHydrationWarning>
+              <span>{getSourceLabel()}</span>
+              <span className={styles.arrow}>→</span>
+              <span>{getDestinationLabel()}</span>
+            </div>
+          </div>
+        </section>
+
+        <div className={styles.dashboard} suppressHydrationWarning>
+          <div className={`${styles.overallAlert} ${isSubscribed ? styles[overallStatus] : styles.locked}`} suppressHydrationWarning>
+             <div className={styles.overallDesc} suppressHydrationWarning>STATUS DA ROTA</div>
+             {isSubscribed ? (
+               <div className={styles.overallStatus} suppressHydrationWarning>{overallStatus.toUpperCase()}</div>
+             ) : (
+               <div className={styles.overallStatus} style={{ fontSize: '1.2rem', marginTop: '4px' }} suppressHydrationWarning>
+                 <div className={styles.lockBadge} suppressHydrationWarning>
+                   <Lock size={18} />
+                   ASSINE PARA LIBERAR
+                 </div>
+               </div>
+             )}
+          </div>
+
+          <div className={styles.poiList} suppressHydrationWarning>
+            {filteredPoints.map(poi => (
+              <Link href={`/poi/${poi.id}`} key={poi.id} className={styles.poiCard}>
+                <div className={styles.poiMain}>
+                  <div className={styles.poiInfo}>
+                    <div className={styles.poiHeader}>
+                      <MapPin size={14} className={styles.pinIcon} />
+                      <span className={styles.poiType}>{poi.type.toUpperCase()}</span>
+                    </div>
+                    <h3 className={styles.poiName}>{poi.name}</h3>
+                  </div>
+                  
+                  {isSubscribed ? (
+                    <div className={`${styles.statusBadge} ${styles[poi.status]}`}>
+                      {poi.status.toUpperCase()}
+                    </div>
+                  ) : (
+                    <div className={`${styles.statusBadge} ${styles.lockedBadge}`}>
+                      <Lock size={12} />
+                      ASSINE JÁ
+                    </div>
+                  )}
+                </div>
+                <div className={styles.poiFooter}>
+                  <div className={styles.lastUpdate}>
+                    <Clock size={12} />
+                    <span>{mounted ? formatRelativeTime(poi.lastUpdate) : '--:--'}</span>
+                  </div>
+                  {(isSubscribed && poi.status === 'sujo') && (
+                    <div className={styles.alertNote}>
+                      <AlertTriangle size={12} />
+                      <span>{poi.history?.[0]?.message || 'Fiscalização ativa'}</span>
+                    </div>
+                  )}
+                  {!isSubscribed && (
+                    <div className={styles.alertNote} style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
+                      <Lock size={12} />
+                      <span>Detalhes bloqueados</span>
+                    </div>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  );
+}

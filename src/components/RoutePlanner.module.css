@@ -1,0 +1,48 @@
+.planner {
+  background-color: var(--secondary-bg);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #333;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid #222;
+}
+
+.label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  width: 35px;
+  text-transform: uppercase;
+}
+
+.divider {
+  margin: 4px 0 4px 32px;
+  border-left: 2px dashed #444;
+  height: 12px;
+}
+
+.select {
+  flex: 1;
+  background: #111; /* Solid background for legibility */
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.select option {
+  background: #111;
+  color: #fff;
+}
