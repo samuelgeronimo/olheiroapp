@@ -91,3 +91,123 @@ button:active {
 .pin-livre { background-color: var(--status-livre); }
 .pin-atencao { background-color: var(--status-atencao); }
 .pin-sujo { background-color: var(--status-sujo); }
+
+/* PWA Prompt Styles */
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pwa-prompt-container {
+  position: fixed;
+  bottom: calc(16px + var(--safe-area-inset-bottom));
+  left: 16px;
+  right: 16px;
+  z-index: 9999;
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.pwa-prompt-card {
+  background-color: #121212;
+  border: 1px solid #2a2a2a;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.pwa-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pwa-icon {
+  width: 44px;
+  height: 44px;
+  background: black;
+  border-radius: 12px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pwa-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.pwa-text h3 {
+  font-size: 14px;
+  margin: 0;
+  color: white;
+}
+
+.pwa-text p {
+  font-size: 12px;
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.pwa-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-install {
+  background-color: white;
+  color: black;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 40px;
+}
+
+.ios-instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ios-step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #252525;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  color: #ccc;
+}
+
+.ios-substep {
+  font-size: 9px;
+  color: #666;
+}
+
+.btn-close {
+  background: transparent;
+  color: #555;
+  padding: 4px;
+}
+
+.btn-close:hover {
+  color: white;
+}
