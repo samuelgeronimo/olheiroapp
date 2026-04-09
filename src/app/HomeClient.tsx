@@ -40,7 +40,7 @@ export default function HomeClient() {
   const sourceCoords = getSourceCoords();
 
   const filteredPoints = points
-    .filter(p => p.routes.includes(destination) && p.routes.includes(source.toLowerCase()))
+    .filter(p => p.routes.includes(`${source.toLowerCase()}-${destination}`))
     .sort((a, b) => {
       const distA = Math.sqrt(Math.pow(a.lat - sourceCoords.lat, 2) + Math.pow(a.lng - sourceCoords.lng, 2));
       const distB = Math.sqrt(Math.pow(b.lat - sourceCoords.lat, 2) + Math.pow(b.lng - sourceCoords.lng, 2));

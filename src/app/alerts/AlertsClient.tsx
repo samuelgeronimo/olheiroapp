@@ -80,7 +80,7 @@ export default function AlertsClient() {
         </p>
         
         <div className={styles.list}>
-          {pois.filter(p => p.routes.includes(source.toLowerCase())).map(poi => (
+          {pois.filter(p => p.routes.some(r => r.startsWith(source.toLowerCase() + '-'))).map(poi => (
             <POIStatusCard 
               key={poi.id} 
               poi={poi} 
