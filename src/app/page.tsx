@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import HomeClient from './HomeClient';
+import { supabase, POI } from '@/lib/supabase';
 
 export const metadata: Metadata = {
   title: "Olheiro - Radar BR-277 | Foz do Iguaçu em Tempo Real",
@@ -17,6 +18,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <HomeClient />;
+export default async function Page() {
+  const { data } = await supabase
+    .from('pois')
+    .select('*')
+    .order('id', { ascending: true });
+
+  const initialPois: POI[] = (data || []).map((p: any) => ({
+    ...p,
+    lastUpdate: p.last_update
+  }));
+
+  return <HomeClient initialPois={initialPois} />;
 }

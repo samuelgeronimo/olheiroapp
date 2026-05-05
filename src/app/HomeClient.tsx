@@ -7,15 +7,16 @@ import { usePOIs } from '@/hooks/usePOIs';
 import { useSubscription } from '@/hooks/useSubscription';
 import { MapPin, Clock, AlertTriangle, Lock, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styles from './page.module.css';
 import { formatRelativeTime } from '@/lib/dateUtils';
+import { POI } from '@/lib/supabase';
 
-export default function HomeClient() {
+export default function HomeClient({ initialPois = [] }: { initialPois?: POI[] }) {
   const [source, setSource] = useState('FOZ');
   const [destination, setDestination] = useState('curitiba');
   const [mounted, setMounted] = useState(false);
-  const { pois: points, loading } = usePOIs();
+  const { pois: points, loading } = usePOIs(initialPois);
   const { isSubscribed } = useSubscription();
 
   useEffect(() => {
@@ -28,32 +29,30 @@ export default function HomeClient() {
     setSource(src);
   };
 
-  const getSourceCoords = () => {
+  const sourceCoords = useMemo(() => {
     switch (source) {
       case 'FOZ': return { lat: -25.5000, lng: -54.5800 };
       case 'SDG': return { lat: -24.0300, lng: -54.3000 };
       case 'PJC': return { lat: -22.5400, lng: -55.7200 };
       default: return { lat: -25.5000, lng: -54.5800 };
     }
-  };
+  }, [source]);
 
-  const sourceCoords = getSourceCoords();
+  const filteredPoints = useMemo(() => {
+    return points
+      .filter(p => p.routes.includes(`${source.toLowerCase()}-${destination}`))
+      .sort((a, b) => {
+        const distA = Math.sqrt(Math.pow(a.lat - sourceCoords.lat, 2) + Math.pow(a.lng - sourceCoords.lng, 2));
+        const distB = Math.sqrt(Math.pow(b.lat - sourceCoords.lat, 2) + Math.pow(b.lng - sourceCoords.lng, 2));
+        return distA - distB;
+      });
+  }, [points, source, destination, sourceCoords]);
 
-  const filteredPoints = points
-    .filter(p => p.routes.includes(`${source.toLowerCase()}-${destination}`))
-    .sort((a, b) => {
-      const distA = Math.sqrt(Math.pow(a.lat - sourceCoords.lat, 2) + Math.pow(a.lng - sourceCoords.lng, 2));
-      const distB = Math.sqrt(Math.pow(b.lat - sourceCoords.lat, 2) + Math.pow(b.lng - sourceCoords.lng, 2));
-      return distA - distB;
-    });
-
-  const getOverallStatus = () => {
+  const overallStatus = useMemo(() => {
     if (filteredPoints.some(p => p.status === 'sujo')) return 'sujo';
     if (filteredPoints.some(p => p.status === 'atencao')) return 'atencao';
     return 'livre';
-  };
-
-  const overallStatus = getOverallStatus();
+  }, [filteredPoints]);
 
   const getSourceLabel = () => {
     switch (source) {
@@ -79,7 +78,7 @@ export default function HomeClient() {
   };
 
   return (
-    <div className={styles.wrapper} suppressHydrationWarning>
+    <div className={styles.wrapper}>
       <Header />
       
       <script
@@ -99,15 +98,15 @@ export default function HomeClient() {
         }}
       />
 
-      <main className="container" aria-label="Painel de Monitoramento" suppressHydrationWarning>
+      <main className="container" aria-label="Painel de Monitoramento">
         <section className={styles.plannerSection}>
           <RoutePlanner onPlan={handlePlan} />
         </section>
 
-        <section className={styles.headerSection} suppressHydrationWarning>
-          <div className={styles.badge} suppressHydrationWarning>ROTA MONITORADA</div>
-          <div className={styles.routeInfo} suppressHydrationWarning>
-            <div className={styles.direction} suppressHydrationWarning>
+        <section className={styles.headerSection}>
+          <div className={styles.badge}>ROTA MONITORADA</div>
+          <div className={styles.routeInfo}>
+            <div className={styles.direction}>
               <span>{getSourceLabel()}</span>
               <span className={styles.arrow}>→</span>
               <span>{getDestinationLabel()}</span>
@@ -115,14 +114,14 @@ export default function HomeClient() {
           </div>
         </section>
 
-        <div className={styles.dashboard} suppressHydrationWarning>
-          <div className={`${styles.overallAlert} ${isSubscribed ? styles[overallStatus] : styles.locked}`} suppressHydrationWarning>
-             <div className={styles.overallDesc} suppressHydrationWarning>STATUS DA ROTA</div>
+        <div className={styles.dashboard}>
+          <div className={`${styles.overallAlert} ${isSubscribed ? styles[overallStatus] : styles.locked}`}>
+             <div className={styles.overallDesc}>STATUS DA ROTA</div>
              {isSubscribed ? (
-               <div className={styles.overallStatus} suppressHydrationWarning>{overallStatus.toUpperCase()}</div>
+               <div className={styles.overallStatus}>{overallStatus.toUpperCase()}</div>
              ) : (
-               <div className={styles.overallStatus} style={{ fontSize: '1.2rem', marginTop: '4px' }} suppressHydrationWarning>
-                 <div className={styles.lockBadge} suppressHydrationWarning>
+               <div className={styles.overallStatus} style={{ fontSize: '1.2rem', marginTop: '4px' }}>
+                 <div className={styles.lockBadge}>
                    <Lock size={18} />
                    ASSINE PARA LIBERAR
                  </div>
@@ -130,7 +129,7 @@ export default function HomeClient() {
              )}
           </div>
 
-          <div className={styles.poiList} suppressHydrationWarning>
+          <div className={styles.poiList}>
             {filteredPoints.map(poi => (
               <Link href={`/poi/${poi.id}`} key={poi.id} className={styles.poiCard}>
                 <div className={styles.poiMain}>
@@ -176,7 +175,7 @@ export default function HomeClient() {
           </div>
         </div>
         <div className={styles.supportLink}>
-          <a href="https://wa.me/5511978867413" target="_blank" className={styles.waBtn}>
+          <a href="https://wa.me/5511978867413" target="_blank" className={styles.waBtn} rel="noreferrer">
             <div className={styles.waIcon}><MessageSquare size={16} /></div>
             <span>Suporte: Sugerir Ponto ou Feedback</span>
           </a>

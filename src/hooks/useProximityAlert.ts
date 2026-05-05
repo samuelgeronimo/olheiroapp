@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { POI } from '@/lib/supabase';
 
 function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -22,7 +22,7 @@ export function useProximityAlert(
   isSubscribed: boolean,
   onAlert: (poiName: string) => void
 ) {
-  const [lastAlertedPoiId, setLastAlertedPoiId] = useState<string | null>(null);
+  const lastAlertedPoiId = useRef<string | null>(null);
 
   useEffect(() => {
     if (!userLocation || isSubscribed || pois.length === 0) return;
@@ -34,12 +34,12 @@ export function useProximityAlert(
       return distance < 1500; // 1.5km de proximidade para dar tempo de reação
     });
 
-    if (nearbyPoi && nearbyPoi.id !== lastAlertedPoiId) {
-      setLastAlertedPoiId(nearbyPoi.id);
+    if (nearbyPoi && nearbyPoi.id !== lastAlertedPoiId.current) {
+      lastAlertedPoiId.current = nearbyPoi.id;
       onAlert(nearbyPoi.name);
     } else if (!nearbyPoi) {
       // Reseta se sair da zona de risco de qualquer POI
-      setLastAlertedPoiId(null);
+      lastAlertedPoiId.current = null;
     }
-  }, [userLocation, pois, isSubscribed, onAlert, lastAlertedPoiId]);
+  }, [userLocation, pois, isSubscribed, onAlert]);
 }

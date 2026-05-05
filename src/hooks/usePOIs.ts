@@ -1,36 +1,39 @@
 import { useEffect, useState } from 'react';
 import { supabase, POI } from '@/lib/supabase';
 
-export function usePOIs() {
-  const [pois, setPois] = useState<POI[]>([]);
-  const [loading, setLoading] = useState(true);
+export function usePOIs(initialPois: POI[] = []) {
+  const [pois, setPois] = useState<POI[]>(initialPois);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPOIs = async () => {
-      try {
-        const { data, error: supabaseError } = await supabase
-          .from('pois')
-          .select('*')
-          .order('id', { ascending: true });
+    // Se não tivermos POIs iniciais, fazemos o fetch inicial (fallback client-side)
+    if (initialPois.length === 0) {
+      setLoading(true);
+      const fetchPOIs = async () => {
+        try {
+          const { data, error: supabaseError } = await supabase
+            .from('pois')
+            .select('*')
+            .order('id', { ascending: true });
 
-        if (supabaseError) throw supabaseError;
+          if (supabaseError) throw supabaseError;
 
-        if (data) {
-          const mapped = data.map((p: any) => ({
-            ...p,
-            lastUpdate: p.last_update
-          }));
-          setPois(mapped);
+          if (data) {
+            const mapped = data.map((p: any) => ({
+              ...p,
+              lastUpdate: p.last_update
+            }));
+            setPois(mapped);
+          }
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
         }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPOIs();
+      };
+      fetchPOIs();
+    }
 
     const channel = supabase
       .channel('pois-realtime')
@@ -56,7 +59,7 @@ export function usePOIs() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [initialPois.length]);
 
   return { pois, loading, error };
 }

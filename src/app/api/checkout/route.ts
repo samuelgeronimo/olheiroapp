@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-export async function POST(req: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-01-27.acacia' as any,
-  });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  // @ts-expect-error - Usando a versão de API mais recente permitida localmente
+  apiVersion: '2025-01-27.acacia',
+});
 
+export async function POST(req: Request) {
   try {
     const { priceId, email, userId } = await req.json();
     console.log('API Request /api/checkout:', { priceId, email, userId });
@@ -21,8 +22,12 @@ export async function POST(req: Request) {
       metadata: { userId }
     });
 
-    return NextResponse.json({ url: session.url });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 400 });
+    return NextResponse.json(
+      { url: session.url },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
+  } catch (err: unknown) {
+    const error = err as Error;
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
