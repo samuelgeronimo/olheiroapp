@@ -32,10 +32,28 @@ export function formatRelativeTime(dateString: string | null | undefined): strin
     return `há ${diffInDays} dias`;
   }
 
-  // Fallback to localized date for older updates
+  // Fallback to localized date+time for older updates
   return date.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+/**
+ * Always formats as "dd/MM/yyyy, HH:mm" regardless of how old.
+ */
+export function formatDateTime(dateString: string | null | undefined): string {
+  if (!dateString) return '--:--';
+
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
 }

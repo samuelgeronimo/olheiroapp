@@ -9,7 +9,7 @@ import { MapPin, Clock, AlertTriangle, Lock, MessageSquare } from 'lucide-react'
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import styles from './page.module.css';
-import { formatRelativeTime } from '@/lib/dateUtils';
+import { formatDateTime } from '@/lib/dateUtils';
 import { POI } from '@/lib/supabase';
 
 export default function HomeClient({ initialPois = [] }: { initialPois?: POI[] }) {
@@ -155,7 +155,7 @@ export default function HomeClient({ initialPois = [] }: { initialPois?: POI[] }
                 <div className={styles.poiFooter}>
                   <div className={styles.lastUpdate}>
                     <Clock size={12} />
-                    <span>{mounted ? formatRelativeTime(poi.lastUpdate) : '--:--'}</span>
+                    <span>{mounted ? formatDateTime(poi.lastUpdate) : '--:--'}</span>
                   </div>
                   {(isSubscribed && poi.status === 'sujo') && (
                     <div className={styles.alertNote}>
